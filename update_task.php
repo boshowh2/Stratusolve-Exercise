@@ -6,19 +6,12 @@ require('Task.class.php');
 // Assignment: Implement this script
 	$taskid = $_POST['taskid'];
 	$action = $_POST['action'];
-	
-	$param = $_POST;
-	$tasks = file_get_contents('Task_Data.txt');
-        if (strlen($tasks) > 0)
-            $tasks = json_decode($tasks); 
-        else
-            $tasks = array(); 
 
 	$task = "";
 	$succeeded = false;
-	if($action == "update") {
+	if($action == "save") {
 		// Check if task name was specified
-		if(!$_POST['name'] or $_POST['name'] == "") {
+		if(!$_POST['name'] or str_replace(' ', '', $_POST['name']) == "") {
 			$response = array("result"=>$succeeded, "message"=>"Please provide a name for the task");
 			
 			echo json_encode($response);
@@ -47,7 +40,7 @@ require('Task.class.php');
 		$succeeded = true;
 	}
 	else {
-		$response = array("result"=>$succeeded, "message"=>"The specified action is not supported: ".$action);
+		$response = array("result"=>$succeeded, "message"=>"The specified action is not supported: ".$taskid);
 			
 		echo json_encode($response);
 	}

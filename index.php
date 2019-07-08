@@ -97,7 +97,7 @@
     });
     $('#saveTask').click(function() {
         //Assignment: Implement this functionality
-        //alert('Save... Id:'+currentTaskId);
+        // alert('Save... Id:'+currentTaskId);
 		$.ajax({
 				type: 'POST',
 				dataType: 'json',
@@ -106,12 +106,12 @@
 					taskid: currentTaskId, 
 					name: $('#InputTaskName').val(), 
 					description: $('#InputTaskDescription').val(),
-					action: 'update'
+					action: 'save'
 				},
 				success: function(data) 
 				{
 					if(data.result) {
-						alert('Success');
+						alert('Successfully saved!');
 						$('#myModal').modal('hide');
 						updateTaskList();
 					}
@@ -137,41 +137,44 @@
     $('#deleteTask').click(function() {
         //Assignment: Implement this functionality
         //alert('Delete... Id:'+currentTaskId);
-		$.ajax({
-				type: 'POST',
-				dataType: 'json',
-				url: 'update_task.php', 
-				data: {
-					taskid: currentTaskId, 
-					name: $('#InputTaskName').val(), 
-					description: $('#InputTaskDescription').val(),
-					action: 'delete'
-				},
-				success: function(data) 
-				{
-					if(data.result) {
-						alert('Success ');
-						$('#myModal').modal('hide');
-						updateTaskList();
+		if(confirm("Are you sure you want to delete this task?"))
+		{
+			$.ajax({
+					type: 'POST',
+					dataType: 'json',
+					url: 'update_task.php', 
+					data: {
+						taskid: currentTaskId, 
+						name: $('#InputTaskName').val(), 
+						description: $('#InputTaskDescription').val(),
+						action: 'delete'
+					},
+					success: function(data) 
+					{
+						if(data.result) {
+							alert('Successfully deleted!');
+							$('#myModal').modal('hide');
+							updateTaskList();
+						}
+						else {
+							alert('Failed: '+ data);
+							$.post("get_task.php", {taskid: currentTaskId})
+							.done(function(data) {
+								var task = JSON.parse(data);
+								$('#InputTaskName').val(task.TaskName);		
+								$('#InputTaskDescription').val(task.TaskDescription);	
+							});
+						}					
+						console.log('Result: '+ data.results + ': ' + data.message);	
+						 
+					},
+					error: function(response) 
+					{
+						alert('Failed: '+ response);	
+						console.log('Result: '+ response + ': ' + response);	
 					}
-					else {
-						alert('Failed: '+ data);
-						$.post("get_task.php", {taskid: currentTaskId})
-						.done(function(data) {
-							var task = JSON.parse(data);
-							$('#InputTaskName').val(task.TaskName);		
-							$('#InputTaskDescription').val(task.TaskDescription);	
-						});
-					}					
-					console.log('Result: '+ data.results + ': ' + data.message);	
-					 
-				},
-				error: function(response) 
-				{
-					alert('Failed: '+ response);	
-					console.log('Result: '+ response + ': ' + response);	
-				}
-		});
+			});
+		}
     });
     function updateTaskList() {
         $.post("list_tasks.php", function( data ) {
@@ -179,5 +182,16 @@
         });
     }
     updateTaskList();
+	
+	$(document).ready(function() {
+
+    $(window).keydown(function(event){
+        if((event.keyCode == 13) && ($(event.target)[0]!=$("textarea")[0])) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
+});
 </script>
 </html>

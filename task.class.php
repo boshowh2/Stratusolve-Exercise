@@ -29,12 +29,16 @@ class Task {
     protected function getUniqueId() {
         // Assignment: Code to get new unique ID
 		$newID = -1;
-		$arr = $this->TaskDataSource;
-			foreach($arr as $task) {
+		try{
+			$newID =  max(array_column($this->TaskDataSource, 'TaskId')) + 1; //only supported for >= php 7
+		}
+		catch(Exception $e){
+			foreach($this->TaskDataSource as $task) {
 				if($task['TaskId'] >= $newID){
 					$newID = $task['TaskId'] + 1;
 				}
 			}
+		}
 		if ($newID == -1)
 			return 1;
 		
@@ -64,41 +68,34 @@ class Task {
 		
 		$arr = $this->TaskDataSource;
 		
-		foreach($arr as $existingTask){
+		foreach($this->TaskDataSource as $key=>$existingTask){
 			if($existingTask['TaskId'] == $this->TaskId)
 			{
-				$newTaskList[] = $this;
+				$this->TaskDataSource[$key] = $this;
 				$updated = true;
+				break;
 			}
-			else
-				$newTaskList[] = $existingTask;
 		}
 		
 		if(!$updated)
-			$newTaskList[] = $this;
-		
+			$this->TaskDataSource[] = $this;
+				
 		$fh = fopen( 'Task_Data.txt', 'w' );
-		fclose($fh);
-		
-		$fh = fopen( 'Task_Data.txt', 'w' );
-		fwrite($fh, json_encode($newTaskList));
+		fwrite($fh, json_encode($this->TaskDataSource));
 		fclose($fh);
     }
     public function Delete() {
         //Assignment: Code to delete task here
 		
-		$arr = $this->TaskDataSource;
-		$index = 0;
-		foreach($this->TaskDataSource as $existingTask){
+		foreach($this->TaskDataSource as $key=>$existingTask){
 			if($existingTask['TaskId'] == $this->TaskId)
 				{
 					if(sizeof($this->TaskDataSource) > 1)
-						unset($this->TaskDataSource[$index]);
+						unset($this->TaskDataSource[$key]);
 					else
 						$this->TaskDataSource = array();
 					break;
 				}
-				$index = ++$index;
 		}
 		
 		$fh = fopen( 'Task_Data.txt', 'w' );
