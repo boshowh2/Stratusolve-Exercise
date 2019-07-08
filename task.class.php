@@ -86,26 +86,24 @@ class Task {
     }
     public function Delete() {
         //Assignment: Code to delete task here
-		//$newTaskList = [];
 		
 		$arr = $this->TaskDataSource;
-		
-		foreach($arr as $existingTask){
+		$index = 0;
+		foreach($this->TaskDataSource as $existingTask){
 			if($existingTask['TaskId'] == $this->TaskId)
 				{
-					// do not add task to new list
+					if(sizeof($this->TaskDataSource) > 1)
+						unset($this->TaskDataSource[$index]);
+					else
+						$this->TaskDataSource = array();
+					break;
 				}
-				else
-					$newTaskList[] = $existingTask;
+				$index = ++$index;
 		}
 		
 		$fh = fopen( 'Task_Data.txt', 'w' );
+		fwrite($fh, json_encode($this->TaskDataSource));
 		fclose($fh);
-		
-		$fh = fopen( 'Task_Data.txt', 'w' );
-		fwrite($fh, json_encode($newTaskList));
-		fclose($fh);
-		return $newTaskList;
     }
 	
 	public function getTaskName() {
