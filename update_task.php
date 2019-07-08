@@ -40,7 +40,7 @@ require('Task.class.php');
 		$succeeded = true;
 	}
 	else {
-		$response = array("result"=>$succeeded, "message"=>"The specified action is not supported: ".$taskid);
+		$response = array("result"=>$succeeded, "message"=>"The specified action is not supported: ".$action);
 			
 		echo json_encode($response);
 	}

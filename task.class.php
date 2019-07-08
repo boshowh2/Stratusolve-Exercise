@@ -65,9 +65,7 @@ class Task {
 				
 		$newTaskList = [];
 		$updated = false;
-		
-		$arr = $this->TaskDataSource;
-		
+				
 		foreach($this->TaskDataSource as $key=>$existingTask){
 			if($existingTask['TaskId'] == $this->TaskId)
 			{
