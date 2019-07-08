@@ -1,6 +1,6 @@
 <?php
 /**
- * This script is to be used to receive a POST with the object information and then either updates, creates or deletes the task object
+ * This script is to be used to receive a POST with the task id and retrieve the rest of the object data
  */
 require('Task.class.php');
 	$postdata = json_decode($_POST['taskid']);
