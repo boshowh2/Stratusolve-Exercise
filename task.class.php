@@ -62,8 +62,6 @@ class Task {
 
     public function Save() {
         //Assignment: Code to save task here
-				
-		$newTaskList = [];
 		$updated = false;
 				
 		foreach($this->TaskDataSource as $key=>$existingTask){
